@@ -14,6 +14,9 @@ RUN pip3 install --requirement /requirements.txt && \
     echo 'alias python=python3' >> ~/.bashrc
 
 RUN mkdir -p /home/ubuntu/http_server/
+ADD api ./api/
+ADD http_server ./http_server/
+
 WORKDIR /home/ubuntu/http_server/
 ADD http_server ./http_server/
 ADD src ./src/
