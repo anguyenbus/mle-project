@@ -1,3 +1,5 @@
+import pickle
+
 import numpy as np
 
 from simple_linear_regr_utils import evaluate, generate_data
@@ -88,3 +90,6 @@ if __name__ == "__main__":
     model.fit(X_train, y_train)
     predicted = model.predict(X_test)
     evaluate(model, X_test, y_test, predicted)
+
+    with open("models/model.pkl", "wb") as f:
+        pickle.dump(model, f)
