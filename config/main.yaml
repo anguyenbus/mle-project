@@ -3,8 +3,8 @@ defaults:
   - model: model1
   - _self_
 
-raw: 
-  path: data/raw/sample.csv
+raw:
+  path: data/raw/iris.csv
 
 processed:
   dir: data/processed
