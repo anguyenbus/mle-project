@@ -40,12 +40,12 @@ variable "id" {
 
 variable "name" {
   type        = string
-  description = "An identification name used inside the project to identify env, region and brain"
+  description = "An identification name used inside the project to identify env, region and id"
 }
 
 variable "customers" {
   type        = string
-  description = "Comma separated list of customer to batch extract skills"
+  description = "Comma separated list of customer to batch linear regression"
 }
 
 variable "ecs_instance_type" {

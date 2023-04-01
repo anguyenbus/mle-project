@@ -10,7 +10,7 @@ resource "aws_ssm_parameter" "slack_hook" {
   }
 }
 
-resource "aws_ssm_parameter" "batch_skills_extraction_customers" {
+resource "aws_ssm_parameter" "batch_linear_extraction_customers" {
   name        = "/anguyenbus/${var.id}/batch-linear-regression/d61/customers"
   description = "Comma separated list of customers"
   type        = "String"
@@ -21,7 +21,7 @@ resource "aws_ssm_parameter" "batch_skills_extraction_customers" {
   }
 }
 
-resource "aws_ssm_parameter" "batch_skills_extraction_customers_bucket_pattern" {
+resource "aws_ssm_parameter" "batch_linear_extraction_customers_bucket_pattern" {
   name        = "/anguyenbus/${var.id}/batch-linear-regression/d61/customers-bucket-pattern"
   description = "Comma separated list of customers"
   type        = "String"

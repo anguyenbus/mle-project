@@ -1,0 +1,9 @@
+BATCH_STATUS_TABLE: 'batch_linear_regression'
+
+BATCH_PROCESSOR_COUNT: 6
+RESULT_WRITER_COUNT: 3
+
+BATCH_PROCESSOR_KINESIS_INPUT_SSM: '/dev/data/batch-linear-regression/BATCH_PROCESSOR_KINESIS_INPUT'
+RESULT_WRITER_KINESIS_INPUT_SSM: '/dev/data/batch-linear-regression/RESULT_WRITER_KINESIS_INPUT'
+DB_NAME_SSM: '/dev/data/batch-linear-regression/DB_DB'
+DB_USER_SSM: '/dev/data/batch-linear-regression/DB_USER'

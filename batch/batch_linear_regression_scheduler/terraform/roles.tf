@@ -210,7 +210,7 @@ resource "aws_iam_role_policy" "task_policy" {
           "kinesis:PutRecord",
           "kinesis:PutRecords"
         ]
-        Resource = ["arn:aws:kinesis:${var.aws_region}:${var.account_id}:stream/${var.name}-${var.service_name}-profile-update-input-from-batch-skill-process"]
+        Resource = ["arn:aws:kinesis:${var.aws_region}:${var.account_id}:stream/${var.name}-${var.service_name}-profile-update-input-from-batch-process"]
       },
       {
         Sid    = "TokenIamBatchDataProcessingDB"

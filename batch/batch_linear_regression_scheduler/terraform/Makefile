@@ -27,7 +27,7 @@ RESET=$(shell tput sgr0)
 
 export TF_VAR_id=$(ID)
 export TF_VAR_name=$(NAME)
-export TF_VAR_customers=$(BATCH_SKILLS_EXTRACTION_CUSTOMERS)
+export TF_VAR_customers=$(BATCH_LINEAR_EXTRACTION_CUSTOMERS)
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -69,7 +69,7 @@ prep: set-env ## Prepare a new workspace (environment) if needed, configure the 
 
 	@echo "$(YELLOW)BRAIN ID:                     	   $(TF_VAR_id)$(RESET)"
 	@echo "$(YELLOW)NAME:                		   $(TF_VAR_name)$(RESET)"
-	@echo "$(YELLOW)BATCH_SKILLS_EXTRACTION_CUSTOMERS: $(TF_VAR_customers)$(RESET)"
+	@echo "$(YELLOW)BATCH_LINEAR_REGRESSION_CUSTOMERS: $(TF_VAR_customers)$(RESET)"
 
 	@terraform init \
 		-force-copy \
