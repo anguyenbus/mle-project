@@ -1,0 +1,77 @@
+env:
+  TERRAFORM_PATH: "batch/batch_linear_regression_scheduler/terraform"
+  SERVICE_PATH: "batch/batch_linear_regression_scheduler"
+  ECR_REPOSITORY_NAME: anguyenbus/batch-linear-regression-scheduler
+  SERVICE_NAME: batch-linear-regression-scheduler
+
+steps:
+
+  - command: echo "Start of concurrency gate $DEPLOY_BRAIN_NAME-$SERVICE_NAME"
+    concurrency_group: $DEPLOY_BRAIN_NAME-$SERVICE_NAME
+    concurrency: 1
+    agents:
+      queue: $BUILDKITE_DEPLOYMENT_QUEUE
+    key: start-gate-deploy
+
+  - label: ":terraform: Terraform Plan | ${DEPLOY_ACCOUNT_NAME} - ${DEPLOY_REGION}"
+    key: "terraform_plan"
+    depends_on: "start-gate-deploy"
+    command: |
+      cd $TERRAFORM_PATH && make plan-out
+    agents:
+      queue: $BUILDKITE_DEPLOYMENT_QUEUE
+    env:
+      ACCOUNT: $DEPLOY_ACCOUNT_NAME
+      REGION: $DEPLOY_REGION
+      ENV: $DEPLOY_ENV
+      TF_IN_AUTOMATION: "yes"
+      BRAIN_ID: $DEPLOY_BRAIN_ID
+      BRAIN_NAME: $DEPLOY_BRAIN_NAME
+      BATCH_SKILLS_EXTRACTION_CUSTOMERS: $DEPLOY_BATCH_SKILLS_EXTRACTION_CUSTOMERS
+      ECS_TASK_DEFINITION_TEMPLATE_PATH: "batch/batch_linear_regression_scheduler/.buildkite/task-definition-template.json"
+      ECS_IMAGE: "${DEPLOY_ACCOUNT_ID}.dkr.ecr.${DEPLOY_REGION}.amazonaws.com/anguyenbus/${SERVICE_NAME}:${PACKAGE_DOCKER_LABEL}"
+    artifact_paths:
+      - "$TERRAFORM_PATH/.terraform/**/*"
+      - "$TERRAFORM_PATH/tfplan"
+      - "$SERVICE_PATH/.buildkite/task-definition.json"
+      - "$TERRAFORM_PATH/.terraform.lock.hcl"
+
+  # Do not block on main branch so we avoid environment drift. Change should be checked and validated in DEV and then again in STAGING
+  # - block: ":green_button: Confirm Terraform apply go ahead?"
+  #   key: block_terraform_apply
+  #   depends_on: "terraform_plan"
+  #   branches: "!${PROD_DEPLOY_BRANCH} !develop"
+
+  - label: ":terraform: Terraform Apply | ${DEPLOY_ACCOUNT_NAME} - ${DEPLOY_REGION}"
+    key: "terraform_apply"
+    artifact_paths:
+      - "$TERRAFORM_PATH/terraform_output.json"
+    depends_on:
+      - terraform_plan
+      # - block_terraform_apply
+    command: |
+      buildkite-agent artifact download $TERRAFORM_PATH/.terraform/* .
+      buildkite-agent artifact download $TERRAFORM_PATH/tfplan .
+      buildkite-agent artifact download $SERVICE_PATH/.buildkite/task-definition.json .
+      buildkite-agent artifact download $TERRAFORM_PATH/.terraform.lock.hcl .
+      chmod -R +x $TERRAFORM_PATH/.terraform
+      cd $TERRAFORM_PATH && make ci-apply
+      make ci-output
+    agents:
+      queue: $BUILDKITE_DEPLOYMENT_QUEUE
+    env:
+      ACCOUNT: $DEPLOY_ACCOUNT_NAME
+      REGION: $DEPLOY_REGION
+      ENV: $DEPLOY_ENV
+      TF_IN_AUTOMATION: "yes"
+      BRAIN_ID: $DEPLOY_BRAIN_ID
+      BRAIN_NAME: $DEPLOY_BRAIN_NAME
+      BATCH_SKILLS_EXTRACTION_CUSTOMERS: $DEPLOY_BATCH_SKILLS_EXTRACTION_CUSTOMERS
+
+  - command: echo "End of concurrency gate $DEPLOY_BRAIN_NAME-$SERVICE_NAME <--"
+    concurrency_group: $DEPLOY_BRAIN_NAME-$SERVICE_NAME
+    concurrency: 1
+    depends_on: terraform_apply
+    agents:
+      queue: $BUILDKITE_DEPLOYMENT_QUEUE
+    key: end-gate-deploy

@@ -90,7 +90,7 @@ The plugin does not accept environment variables.
 We could improve this and remove the generate ecs deploy step if plugin could handle environment variables (which can be dynamic) or if we used another plugin or mechanism to deploy to ECS
 
 ## destroy resources pipeline
-https://buildkite.com/anguyenbus/batch-skill-extraction-scheduler-destroy
+https://buildkite.com/anguyenbus/batch-linear-regression-scheduler-destroy
 
 Environment variables:
 
