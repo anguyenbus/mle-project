@@ -2,7 +2,7 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-
+from src.simple_linear_regr import SimpleLinearRegression
 
 def main():
     """Run administrative tasks."""

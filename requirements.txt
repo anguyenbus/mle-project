@@ -1,4 +1,4 @@
-sklearn
+scikit-learn
 numpy==1.20
 matplotlib==3.7.1
 django==3.2

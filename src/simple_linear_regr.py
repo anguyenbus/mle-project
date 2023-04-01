@@ -2,8 +2,8 @@ import pickle
 
 import numpy as np
 
-from simple_linear_regr_utils import evaluate, generate_data
-
+from .simple_linear_regr_utils import evaluate, generate_data
+from joblib import dump, load
 
 class SimpleLinearRegression:
     def __init__(self, iterations=15000, lr=0.1):
@@ -90,6 +90,5 @@ if __name__ == "__main__":
     model.fit(X_train, y_train)
     predicted = model.predict(X_test)
     evaluate(model, X_test, y_test, predicted)
+    dump(model, 'models/model.joblib')
 
-    with open("models/model.pkl", "wb") as f:
-        pickle.dump(model, f)

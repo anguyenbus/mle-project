@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.datasets import load_diabetes
 from sklearn.metrics import mean_squared_error, r2_score
-
+import sys
+sys.path.append("..")
 
 def generate_data():
     """

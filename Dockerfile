@@ -13,14 +13,20 @@ RUN apt-get update && \
 RUN pip3 install --requirement /requirements.txt && \
     echo 'alias python=python3' >> ~/.bashrc
 
-ADD manage.py .
-ADD api ./api/
+RUN mkdir -p /home/ubuntu/http_server/
+WORKDIR /home/ubuntu/http_server/
 ADD http_server ./http_server/
+ADD src ./src/
+ADD api ./api/
+ADD models ./models/
+ADD manage.py .
+
 
 
 ADD run.sh .
+
 RUN chmod +x run.sh
 EXPOSE 8000
 EXPOSE 8001
 
-CMD ["./run.sh"]
+# CMD ["./run.sh"]

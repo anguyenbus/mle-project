@@ -3,15 +3,12 @@ import os
 import pickle
 import sys
 import time
-
+import numpy as np
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
-# Load the saved model from the file
-with open("models/model.pkl", "rb") as f:
-    MODEL = pickle.load(f)
-
-
+from joblib import load
+import sys
+sys.path.append("..")
 def process_request(request):
     """
     Extracts relevant information from the request object and returns them.
@@ -28,15 +25,26 @@ def process_request(request):
     input_value = request.get("input_value", "")
 
     # Print some information for debugging purposes
-    print(f"Received input. ID: {input_value}")
+    print(f"Received input: {input_value}")
 
+    if "," in input_value:
+        batch = True
+        input_value = [[float(value)] for value in input_value[1:-1].split(',')]
+        print(f"input values: {input_value}")
+        input_value = np.array(input_value)
+    else:
+        batch = False
+        input_value = np.array([float(input_value)], dtype='float64')
     # Return the extracted data as a tuple
-    return input_value
+    return batch, input_value
 
 
 @csrf_exempt
 def parse(request):
-
+    # Load the saved model from the file
+    from src.simple_linear_regr import SimpleLinearRegression
+    MODEL = SimpleLinearRegression()
+    MODEL = load('models/model.joblib')
     batch_services = True
     # request can be either a dict (batch services) or a HttpRequest class
     if not isinstance(request, dict):
@@ -47,20 +55,11 @@ def parse(request):
         request = request.POST
         batch_services = False
 
-    input_value = process_request(request=request)
-    if not input_value or len(input_value) > 80000:
-        return [
-            JsonResponse({"status": "ok", "data": []}, status=200),
-            {"status": "ok", "data": []},
-        ][batch_services]
-
+    batch, input_value = process_request(request=request)
     # predict
-    predictions = MODEL.predict(input_value)
+    predictions = MODEL.predict(input_value).tolist()
 
-    if batch_services:
-        return {"status": "ok", "data": predictions}
-    else:
-        return JsonResponse({"status": "ok", "data": predictions}, status=200)
+    return JsonResponse({"status": "ok", "data": predictions}, status=200)
 
 
 def health(request):
