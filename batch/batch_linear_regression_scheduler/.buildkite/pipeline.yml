@@ -4,7 +4,7 @@ env:
   SHARED_ECR_REPOSITORY_URI: 123456789876.dkr.ecr.ap-southeast-2.amazonaws.com
   MAJOR_VERSION: 1
   MINOR_VERSION: 0
-  DOCKERFILE_PATH: batch.linear-regression.extraction.scheduler.Dockerfile
+  DOCKERFILE_PATH: batch.linear.regression.Dockerfile
   DOCKER_COMPOSE_PATH: docker-compose.yml
   SERVICE_NAME: batch-linear-regression-scheduler
   ENVIRONMENTS_DEFINITION_BRANCH: main
@@ -98,7 +98,7 @@ steps:
       DEPLOY_ENV: "dev"
       PACKAGE_DOCKER_LABEL: $PACKAGE_VERSION
     command: |
-      node batch/batch_linear-regression_extraction_scheduler/.buildkite/scripts/generate-deploy-trigger-step.js | buildkite-agent pipeline upload
+      node batch/batch_linear_regression_scheduler/.buildkite/scripts/generate-deploy-trigger-step.js | buildkite-agent pipeline upload
     plugins:
       - ./.buildkite/plugins/get-environments-definition:
           branch: $ENVIRONMENTS_DEFINITION_BRANCH
@@ -120,7 +120,7 @@ steps:
       DEPLOY_ENV: "stage"
       PACKAGE_DOCKER_LABEL: $PACKAGE_VERSION
     command: |
-      node batch/batch_linear-regression_extraction_scheduler/.buildkite/scripts/generate-deploy-trigger-step.js | buildkite-agent pipeline upload
+      node batch/batch_linear_extraction_scheduler/.buildkite/scripts/generate-deploy-trigger-step.js | buildkite-agent pipeline upload
     plugins:
       - ./.buildkite/plugins/get-environments-definition:
           branch: $ENVIRONMENTS_DEFINITION_BRANCH
@@ -142,7 +142,7 @@ steps:
       DEPLOY_ENV: "prod"
       PACKAGE_DOCKER_LABEL: $PACKAGE_VERSION
     command: |
-      node batch/batch_linear-regression_extraction_scheduler/.buildkite/scripts/generate-deploy-trigger-step.js | buildkite-agent pipeline upload
+      node batch/batch_linear_extraction_scheduler/.buildkite/scripts/generate-deploy-trigger-step.js | buildkite-agent pipeline upload
     plugins:
       - ./.buildkite/plugins/get-environments-definition:
           branch: $ENVIRONMENTS_DEFINITION_BRANCH

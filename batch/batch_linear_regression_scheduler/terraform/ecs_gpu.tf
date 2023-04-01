@@ -106,7 +106,7 @@ module "ecs_instance_sg_gpu" {
   tags = merge(local.tags, { Name = "${var.brain_name}-batch-linear-regression-ecs-instances-sg" })
 }
 
-resource "aws_security_group_rule" "brain_rds_batch_skill_extraction_sg" {
+resource "aws_security_group_rule" "brain_rds_batch_linear_regression_sg" {
   description       = "batch-linear-regression access"
   type              = "ingress"
   from_port         = 3306
