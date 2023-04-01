@@ -15,6 +15,6 @@ export GITHUB_ACCESS_TOKEN
 
 ENVIRONMENTS_DEFINITION_BRANCH="${BUILDKITE_PLUGIN_GET_ENVIRONMENTS_DEFINITION_BRANCH:-main}"
 
-echo "Clone github.com/reejig/environments-customers.git with branch $ENVIRONMENTS_DEFINITION_BRANCH"
-git clone https://$GITHUB_ACCESS_TOKEN@github.com/reejig/environments-customers.git -b $ENVIRONMENTS_DEFINITION_BRANCH
+echo "Clone github.com/anguyenbus/environments-customers.git with branch $ENVIRONMENTS_DEFINITION_BRANCH"
+git clone https://$GITHUB_ACCESS_TOKEN@github.com/anguyenbus/environments-customers.git -b $ENVIRONMENTS_DEFINITION_BRANCH
 echo "Retrieved environment definitions"
