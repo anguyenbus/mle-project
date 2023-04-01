@@ -19,16 +19,16 @@ get_ssm () {
   aws ssm get-parameter --name "$1" --query "Parameter.Value" --with-decryption --output text
 }
 
-DEPLOY_ECS_TASK_ROLE_BATCH_SKILL_EXTRACTION=$(get_ssm "/reejig-brain/${DEPLOY_BRAIN_ID}/batch-skill-extraction/task-role-arn")
-export DEPLOY_ECS_TASK_ROLE_BATCH_SKILL_EXTRACTION
+DEPLOY_ECS_TASK_ROLE_BATCH_LINEAR_REGRESSION=$(get_ssm "/mle-project/${DEPLOY_BRAIN_ID}/batch-linear-regression/task-role-arn")
+export DEPLOY_ECS_TASK_ROLE_BATCH_LINEAR_REGRESSION
 
 
-DEPLOY_ECS_TASK_ROLE_SKILL_EXTRACTION=$(get_ssm "/reejig-brain/${DEPLOY_BRAIN_ID}/skill-extraction/task-role-arn")
-export DEPLOY_ECS_TASK_ROLE_SKILL_EXTRACTION
+DEPLOY_ECS_TASK_ROLE_LINEAR_REGRESSION=$(get_ssm "/mle-project/${DEPLOY_BRAIN_ID}/linear-regression/task-role-arn")
+export DEPLOY_ECS_TASK_ROLE_LINEAR_REGRESSION
 
-DEPLOY_ECS_CLUSTER_BATCH_SKILL_EXTRACTION=$(get_ssm "/reejig-brain/${DEPLOY_BRAIN_ID}/batch-skill-extraction/processing-ecs-cluster/name")
-export DEPLOY_ECS_CLUSTER_BATCH_SKILL_EXTRACTION
-echo "DEPLOY_ECS_CLUSTER_BATCH_SKILL_EXTRACTION: ${DEPLOY_ECS_CLUSTER_BATCH_SKILL_EXTRACTION}"
+DEPLOY_ECS_CLUSTER_BATCH_LINEAR_REGRESSION=$(get_ssm "/mle-project/${DEPLOY_BRAIN_ID}/batch-linear-regression/processing-ecs-cluster/name")
+export DEPLOY_ECS_CLUSTER_BATCH_LINEAR_REGRESSION
+echo "DEPLOY_ECS_CLUSTER_BATCH_LINEAR_REGRESSION: ${DEPLOY_ECS_CLUSTER_BATCH_LINEAR_REGRESSION}"
 
 echo "end pre-command hook"
 
