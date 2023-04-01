@@ -33,7 +33,7 @@ data "template_file" "user_data_ecs_gpu" {
   template = file("${path.module}/templates/user-data.sh")
 
   vars = {
-    cluster_name = "${var.brain_name}-batch-skill-extraction"
+    cluster_name = "${var.brain_name}-batch-linear-regression"
     region       = var.aws_region
   }
 }

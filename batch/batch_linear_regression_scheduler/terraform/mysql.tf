@@ -28,7 +28,7 @@ resource "mysql_grant" "user" {
 }
 
 resource "aws_ssm_parameter" "db_name" {
-  name        = "/anguyenbus/${var.brain_id}/batch-skill-extraction/d61/database/dbname"
+  name        = "/anguyenbus/${var.brain_id}/batch-linear-regression/d61/database/dbname"
   description = "The batch_data_processing database dbname"
   type        = "String"
   value       = mysql_database.batch_data_processing.name
@@ -39,7 +39,7 @@ resource "aws_ssm_parameter" "db_name" {
 }
 
 resource "aws_ssm_parameter" "db_username" {
-  name        = "/anguyenbus/${var.brain_id}/batch-skill-extraction/d61/database/username"
+  name        = "/anguyenbus/${var.brain_id}/batch-linear-regression/d61/database/username"
   description = "The batch_data_processing database username"
   type        = "String"
   value       = mysql_user.user.user
@@ -76,7 +76,7 @@ resource "mysql_grant" "brain_batch_extraction_grant" {
 
 resource "aws_ssm_parameter" "brain_batch_extraction_db_host" {
   count = length(local.customers_list)
-  name        = "/anguyenbus/${var.brain_id}/batch-skill-extraction/customer_db/${local.customers_list[count.index]}/host"
+  name        = "/anguyenbus/${var.brain_id}/batch-linear-regression/customer_db/${local.customers_list[count.index]}/host"
   type        = "SecureString"
   value       = data.aws_ssm_parameter.rds_address.value
   tags = {
@@ -86,7 +86,7 @@ resource "aws_ssm_parameter" "brain_batch_extraction_db_host" {
 
 resource "aws_ssm_parameter" "brain_batch_extraction_db_port" {
   count = length(local.customers_list)
-  name        = "/anguyenbus/${var.brain_id}/batch-skill-extraction/customer_db/${local.customers_list[count.index]}/port"
+  name        = "/anguyenbus/${var.brain_id}/batch-linear-regression/customer_db/${local.customers_list[count.index]}/port"
   type        = "SecureString"
   value       = 3306
   tags = {
@@ -96,7 +96,7 @@ resource "aws_ssm_parameter" "brain_batch_extraction_db_port" {
 
 resource "aws_ssm_parameter" "brain_batch_extraction_db_name" {
   count = length(local.customers_list)
-  name        = "/anguyenbus/${var.brain_id}/batch-skill-extraction/customer_db/${local.customers_list[count.index]}/database"
+  name        = "/anguyenbus/${var.brain_id}/batch-linear-regression/customer_db/${local.customers_list[count.index]}/database"
   type        = "SecureString"
   value       = local.customers_list[count.index]
   tags = {
@@ -105,74 +105,12 @@ resource "aws_ssm_parameter" "brain_batch_extraction_db_name" {
 }
 resource "aws_ssm_parameter" "brain_batch_extraction_db_user" {
   count = length(local.customers_list)
-  name        = "/anguyenbus/${var.brain_id}/batch-skill-extraction/customer_db/${local.customers_list[count.index]}/user"
+  name        = "/anguyenbus/${var.brain_id}/batch-linear-regression/customer_db/${local.customers_list[count.index]}/user"
   type        = "SecureString"
   value       = mysql_user.customer_db[count.index].user
   tags = {
     environment = "${var.environment}"
   }
 }
-
-# table specific grant (only works if tables exist)
-# resource "mysql_grant" "brain_batch_extraction_grant1" {
-#   count = length(local.customers_list)
-#   user       = mysql_user.customer_db.user
-#   host       = mysql_user.customer_db.host
-#   database   = local.customers_list[count.index]
-#   table      = "resumes"
-#   privileges = ["SELECT"]
-# }
-# resource "mysql_grant" "brain_batch_extraction_grant2" {
-#   user       = mysql_user.brain_batch_extraction_user.user
-#   host       = mysql_user.brain_batch_extraction_user.host
-#   database   = mysql_database.brain_database.name
-#   table      = "contacts"
-#   privileges = ["SELECT"]
-# }
-# resource "mysql_grant" "brain_batch_extraction_grant3" {
-#   user       = mysql_user.brain_batch_extraction_user.user
-#   host       = mysql_user.brain_batch_extraction_user.host
-#   database   = mysql_database.brain_database.name
-#   table      = "experiences"
-#   privileges = ["SELECT"]
-# }
-# resource "mysql_grant" "brain_batch_extraction_grant4" {
-#   user       = mysql_user.brain_batch_extraction_user.user
-#   host       = mysql_user.brain_batch_extraction_user.host
-#   database   = mysql_database.brain_database.name
-#   table      = "jobs"
-#   privileges = ["SELECT"]
-# }
-# resource "mysql_grant" "brain_batch_extraction_grant5" {
-#   user       = mysql_user.brain_batch_extraction_user.user
-#   host       = mysql_user.brain_batch_extraction_user.host
-#   database   = mysql_database.brain_database.name
-#   table      = "talent_skills"
-#   privileges = ["SELECT"]
-# }
-# resource "mysql_grant" "brain_batch_extraction_grant6" {
-#   user       = mysql_user.brain_batch_extraction_user.user
-#   host       = mysql_user.brain_batch_extraction_user.host
-#   database   = mysql_database.brain_database.name
-#   table      = "job_skills"
-#   privileges = ["SELECT"]
-# }
-
-# resource "mysql_grant" "brain_batch_extraction_grant7" {
-#   user       = mysql_user.brain_batch_extraction_user.user
-#   host       = mysql_user.brain_batch_extraction_user.host
-#   database   = mysql_database.brain_database.name
-#   table      = "talent_skills"
-#   privileges = ["WRITE"]
-# }
-
-# resource "mysql_grant" "brain_batch_extraction_grant8" {
-#   user       = mysql_user.brain_batch_extraction_user.user
-#   host       = mysql_user.brain_batch_extraction_user.host
-#   database   = mysql_database.brain_database.name
-#   table      = "job_skills"
-#   privileges = ["WRITE"]
-# }
-
 
 

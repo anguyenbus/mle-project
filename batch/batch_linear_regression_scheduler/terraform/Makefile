@@ -17,7 +17,7 @@
 .PHONY: apply destroy destroy-target plan-destroy plan plan-target prep
 VARS="vars/$(ACCOUNT)-$(REGION).tfvars"
 DYNAMODB_TABLE="terraform-remote-state-lock"
-KEY="batch-skill-extraction/$(BRAIN_ID)/terraform.tfstate"
+KEY="batch-linear-regression/$(BRAIN_ID)/terraform.tfstate"
 WORKSPACE="$(ACCOUNT)-$(REGION)"
 BOLD=$(shell tput bold)
 RED=$(shell tput setaf 1)

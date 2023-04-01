@@ -27,7 +27,7 @@ variable "environment" {
 variable "service_name" {
   type        = string
   description = "Name of the services being created"
-  default     = "batch-skill-extraction"
+  default     = "batch-linear-regression"
 }
 
 #-----------------------------------------------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ locals {
   #   "ap-southeast-2" = "syd"
   #   "us-east-1"      = "nva"
   # }
-  # brain_name  = "brain-${var.environment}-${local.region_short_names_city[var.aws_region]}-${var.brain_id}" 
+  # brain_name  = "brain-${var.environment}-${local.region_short_names_city[var.aws_region]}-${var.brain_id}"
 
   tags = {
     Service     = var.service_name

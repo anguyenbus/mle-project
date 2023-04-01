@@ -46,7 +46,7 @@ resource "aws_iam_role_policy" "task_policy_scheduler" {
         ]
         Resource = [
           for customer in local.customers_list:
-            "arn:aws:kinesis:${var.aws_region}:${var.account_id}:stream/batch-skill-extraction-input-${customer}"
+            "arn:aws:kinesis:${var.aws_region}:${var.account_id}:stream/batch-linear-regression-input-${customer}"
         ]
       },
       {
@@ -59,7 +59,7 @@ resource "aws_iam_role_policy" "task_policy_scheduler" {
         ]
         Resource = [
           for customer in local.customers_list:
-            "arn:aws:kinesis:${var.aws_region}:${var.account_id}:stream/batch-skill-extraction-output-${customer}"
+            "arn:aws:kinesis:${var.aws_region}:${var.account_id}:stream/batch-linear-regression-output-${customer}"
         ]
       },
       {
@@ -93,8 +93,8 @@ resource "aws_iam_role_policy" "task_policy_scheduler" {
         ]
         Resource = [
           aws_ecs_cluster.ecs_cluster_gpu.arn,
-          "arn:aws:ecs:${var.aws_region}:${var.account_id}:service/${var.brain_name}-${var.service_name}/batch-skill-extraction-processor",
-          "arn:aws:ecs:${var.aws_region}:${var.account_id}:service/${var.brain_name}-${var.service_name}/batch-skill-extraction-writer"
+          "arn:aws:ecs:${var.aws_region}:${var.account_id}:service/${var.brain_name}-${var.service_name}/batch-linear-regression-processor",
+          "arn:aws:ecs:${var.aws_region}:${var.account_id}:service/${var.brain_name}-${var.service_name}/batch-linear-regression-writer"
         ]
 
       },
@@ -121,7 +121,7 @@ resource "aws_iam_role_policy" "task_policy_scheduler" {
         Action = [
           "ssm:PutParameter"
         ]
-        Resource = ["arn:aws:ssm:${var.aws_region}:${var.account_id}:parameter/anguyenbus/${var.brain_id}/batch-skill-extraction/d61/kinesis*"]
+        Resource = ["arn:aws:ssm:${var.aws_region}:${var.account_id}:parameter/anguyenbus/${var.brain_id}/batch-linear-regression/d61/kinesis*"]
       },
       {
         Sid    = "SSMGet"
@@ -129,7 +129,7 @@ resource "aws_iam_role_policy" "task_policy_scheduler" {
         Action = [
           "ssm:GetParameter"
         ]
-        Resource = ["arn:aws:ssm:${var.aws_region}:${var.account_id}:parameter/anguyenbus/${var.brain_id}/batch-skill-extraction/*"]
+        Resource = ["arn:aws:ssm:${var.aws_region}:${var.account_id}:parameter/anguyenbus/${var.brain_id}/batch-linear-regression/*"]
       }
     ]
   })
@@ -184,7 +184,7 @@ resource "aws_iam_role_policy" "task_policy" {
         ]
         Resource = [
           for customer in local.customers_list:
-            "arn:aws:kinesis:${var.aws_region}:${var.account_id}:stream/batch-skill-extraction-output-${customer}"
+            "arn:aws:kinesis:${var.aws_region}:${var.account_id}:stream/batch-linear-regression-output-${customer}"
         ]
       },
       {
@@ -198,7 +198,7 @@ resource "aws_iam_role_policy" "task_policy" {
         ]
         Resource = [
           for customer in local.customers_list:
-            "arn:aws:kinesis:${var.aws_region}:${var.account_id}:stream/batch-skill-extraction-input-${customer}"
+            "arn:aws:kinesis:${var.aws_region}:${var.account_id}:stream/batch-linear-regression-input-${customer}"
         ]
       },
       {
@@ -253,7 +253,7 @@ resource "aws_kms_grant" "customer_kms_key_writer_processor" {
 }
 
 resource "aws_ssm_parameter" "task_role_arn" {
-  name        = "/anguyenbus/${var.brain_id}/batch-skill-extraction/task-role-arn"
+  name        = "/anguyenbus/${var.brain_id}/batch-linear-regression/task-role-arn"
   description = "The ARN for the  ECS task role"
   type        = "String"
   value       = module.task_role.iam_role_arn

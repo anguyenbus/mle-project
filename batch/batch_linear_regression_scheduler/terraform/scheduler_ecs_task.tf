@@ -3,7 +3,7 @@ locals {
 }
 
 resource "aws_ecs_task_definition" "service" {
-  family                = "batch-skill-extraction-scheduler"
+  family                = "batch-linear-regression-scheduler"
   container_definitions = file("../.buildkite/task-definition.json")
   execution_role_arn = local.execution_role_arn
   task_role_arn = module.task_role_scheduler.iam_role_arn
@@ -11,10 +11,10 @@ resource "aws_ecs_task_definition" "service" {
 
 # TODO: use terraform in the processor service to create this SSM
 resource "aws_ssm_parameter" "batch_ecs_service_processor" {
-  name        = "/anguyenbus/${var.brain_id}/batch-skill-extraction/ecs-service-processor"
+  name        = "/anguyenbus/${var.brain_id}/batch-linear-regression/ecs-service-processor"
   description = "Name of the ECS service for batch skill processor"
   type        = "String"
-  value       = "batch-skill-extraction-processor"
+  value       = "batch-linear-regression-processor"
 
   tags = {
     environment = "${var.environment}"
@@ -23,10 +23,10 @@ resource "aws_ssm_parameter" "batch_ecs_service_processor" {
 
 # TODO: use terraform in the writer service to create this SSM
 resource "aws_ssm_parameter" "batch_ecs_service_writer" {
-  name        = "/anguyenbus/${var.brain_id}/batch-skill-extraction/ecs-service-writer"
+  name        = "/anguyenbus/${var.brain_id}/batch-linear-regression/ecs-service-writer"
   description = "Name of the ECS service for batch skill writer"
   type        = "String"
-  value       = "batch-skill-extraction-writer"
+  value       = "batch-linear-regression-writer"
 
   tags = {
     environment = "${var.environment}"

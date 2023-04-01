@@ -1,6 +1,6 @@
 # Various SSM used by anguyenbus
 resource "aws_ssm_parameter" "slack_hook" {
-  name        = "/anguyenbus/${var.brain_id}/batch-skill-extraction/slack-web-hook"
+  name        = "/anguyenbus/${var.brain_id}/batch-linear-regression/slack-web-hook"
   description = "Slack hook"
   type        = "SecureString"
   value       = "https://hooks.slack.com/services/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"
@@ -11,7 +11,7 @@ resource "aws_ssm_parameter" "slack_hook" {
 }
 
 resource "aws_ssm_parameter" "batch_skills_extraction_customers" {
-  name        = "/anguyenbus/${var.brain_id}/batch-skill-extraction/d61/customers"
+  name        = "/anguyenbus/${var.brain_id}/batch-linear-regression/d61/customers"
   description = "Comma separated list of customers"
   type        = "String"
   value       = var.customers
@@ -22,7 +22,7 @@ resource "aws_ssm_parameter" "batch_skills_extraction_customers" {
 }
 
 resource "aws_ssm_parameter" "batch_skills_extraction_customers_bucket_pattern" {
-  name        = "/anguyenbus/${var.brain_id}/batch-skill-extraction/d61/customers-bucket-pattern"
+  name        = "/anguyenbus/${var.brain_id}/batch-linear-regression/d61/customers-bucket-pattern"
   description = "Comma separated list of customers"
   type        = "String"
   value       = "brain-data-${var.environment}-${local.region_short_name}-{}"
