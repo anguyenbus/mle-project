@@ -21,12 +21,10 @@ ADD api ./api/
 ADD models ./models/
 ADD manage.py .
 
-
-
 ADD run.sh .
 
 RUN chmod +x run.sh
 EXPOSE 8000
 EXPOSE 8001
 
-# CMD ["./run.sh"]
+CMD ["./run.sh"]
