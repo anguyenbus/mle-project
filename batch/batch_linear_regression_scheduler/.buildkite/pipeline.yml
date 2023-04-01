@@ -1,12 +1,12 @@
 env:
   QUALITY_GATES_IMAGE: 123456789876.dkr.ecr.ap-southeast-2.amazonaws.com/devops/devops-buildkite-quality-gates:latest
-  ECR_REPOSITORY_NAME: brain/batch-skill-extraction-scheduler
+  ECR_REPOSITORY_NAME: brain/batch-linear-regression-scheduler
   SHARED_ECR_REPOSITORY_URI: 123456789876.dkr.ecr.ap-southeast-2.amazonaws.com
   MAJOR_VERSION: 1
   MINOR_VERSION: 0
-  DOCKERFILE_PATH: batch.skill.extraction.scheduler.Dockerfile
+  DOCKERFILE_PATH: batch.linear-regression.extraction.scheduler.Dockerfile
   DOCKER_COMPOSE_PATH: docker-compose.yml
-  SERVICE_NAME: batch-skill-extraction-scheduler
+  SERVICE_NAME: batch-linear-regression-scheduler
   ENVIRONMENTS_DEFINITION_BRANCH: main
   PROD_DEPLOY_BRANCH: master
 
@@ -49,8 +49,6 @@ steps:
     agents:
       queue: shared
     depends_on: docker_build
-    # concurrency: 1
-    # concurrency_group: "shared/$SERVICE_NAME/code-scan"
     env:
       PROJECT_NAME: $SERVICE_NAME
       IMAGE_NAME: ${SHARED_ECR_REPOSITORY_URI}/${ECR_REPOSITORY_NAME}:build-${BUILDKITE_BUILD_NUMBER}
@@ -100,7 +98,7 @@ steps:
       DEPLOY_ENV: "dev"
       PACKAGE_DOCKER_LABEL: $PACKAGE_VERSION
     command: |
-      node batch/batch_skill_extraction_scheduler/.buildkite/scripts/generate-deploy-trigger-step.js | buildkite-agent pipeline upload
+      node batch/batch_linear-regression_extraction_scheduler/.buildkite/scripts/generate-deploy-trigger-step.js | buildkite-agent pipeline upload
     plugins:
       - ./.buildkite/plugins/get-environments-definition:
           branch: $ENVIRONMENTS_DEFINITION_BRANCH
@@ -122,7 +120,7 @@ steps:
       DEPLOY_ENV: "stage"
       PACKAGE_DOCKER_LABEL: $PACKAGE_VERSION
     command: |
-      node batch/batch_skill_extraction_scheduler/.buildkite/scripts/generate-deploy-trigger-step.js | buildkite-agent pipeline upload
+      node batch/batch_linear-regression_extraction_scheduler/.buildkite/scripts/generate-deploy-trigger-step.js | buildkite-agent pipeline upload
     plugins:
       - ./.buildkite/plugins/get-environments-definition:
           branch: $ENVIRONMENTS_DEFINITION_BRANCH
@@ -144,7 +142,7 @@ steps:
       DEPLOY_ENV: "prod"
       PACKAGE_DOCKER_LABEL: $PACKAGE_VERSION
     command: |
-      node batch/batch_skill_extraction_scheduler/.buildkite/scripts/generate-deploy-trigger-step.js | buildkite-agent pipeline upload
+      node batch/batch_linear-regression_extraction_scheduler/.buildkite/scripts/generate-deploy-trigger-step.js | buildkite-agent pipeline upload
     plugins:
       - ./.buildkite/plugins/get-environments-definition:
           branch: $ENVIRONMENTS_DEFINITION_BRANCH
