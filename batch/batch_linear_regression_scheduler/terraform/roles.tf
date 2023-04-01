@@ -11,16 +11,16 @@ module "task_role_scheduler" {
   ]
 
   create_role           = true
-  role_name             = "${var.brain_name}-${var.service_name}-scheduler-task-exe"
-  role_description      = "ECS Task Role for svc-${var.service_name} scheduler in ${var.brain_name}"
+  role_name             = "${var.name}-${var.service_name}-scheduler-task-exe"
+  role_description      = "ECS Task Role for svc-${var.service_name} scheduler in ${var.name}"
   force_detach_policies = true
   role_requires_mfa     = false
   role_path             = "/"
-  tags                  = merge(local.tags, { Name = "${var.brain_name}-${var.service_name}-task-exe" })
+  tags                  = merge(local.tags, { Name = "${var.name}-${var.service_name}-task-exe" })
 }
 resource "aws_iam_role_policy" "task_policy_scheduler" {
   role = module.task_role_scheduler.iam_role_name
-  name = "${var.brain_name}-${var.service_name}-scheduler-policy"
+  name = "${var.name}-${var.service_name}-scheduler-policy"
   policy = jsonencode({
     Statement = [
       {
@@ -70,7 +70,7 @@ resource "aws_iam_role_policy" "task_policy_scheduler" {
         ]
         Resource = [
           for customer in local.customers_list:
-            "arn:aws:rds-db:${var.aws_region}:${var.account_id}:dbuser:${data.aws_ssm_parameter.brain_rds_resource_id.value}/${mysql_user.customer_db[index(local.customers_list, customer)].user}"
+            "arn:aws:rds-db:${var.aws_region}:${var.account_id}:dbuser:${data.aws_ssm_parameter.rds_resource_id.value}/${mysql_user.customer_db[index(local.customers_list, customer)].user}"
         ]
       },
       {
@@ -80,7 +80,7 @@ resource "aws_iam_role_policy" "task_policy_scheduler" {
           "rds-db:connect"
         ]
         Resource = [
-          "arn:aws:rds-db:${var.aws_region}:${var.account_id}:dbuser:${data.aws_ssm_parameter.brain_rds_resource_id.value}/${mysql_user.user.user}"
+          "arn:aws:rds-db:${var.aws_region}:${var.account_id}:dbuser:${data.aws_ssm_parameter.rds_resource_id.value}/${mysql_user.user.user}"
         ]
       },
       {
@@ -93,8 +93,8 @@ resource "aws_iam_role_policy" "task_policy_scheduler" {
         ]
         Resource = [
           aws_ecs_cluster.ecs_cluster_gpu.arn,
-          "arn:aws:ecs:${var.aws_region}:${var.account_id}:service/${var.brain_name}-${var.service_name}/batch-linear-regression-processor",
-          "arn:aws:ecs:${var.aws_region}:${var.account_id}:service/${var.brain_name}-${var.service_name}/batch-linear-regression-writer"
+          "arn:aws:ecs:${var.aws_region}:${var.account_id}:service/${var.name}-${var.service_name}/batch-linear-regression-processor",
+          "arn:aws:ecs:${var.aws_region}:${var.account_id}:service/${var.name}-${var.service_name}/batch-linear-regression-writer"
         ]
 
       },
@@ -121,7 +121,7 @@ resource "aws_iam_role_policy" "task_policy_scheduler" {
         Action = [
           "ssm:PutParameter"
         ]
-        Resource = ["arn:aws:ssm:${var.aws_region}:${var.account_id}:parameter/anguyenbus/${var.brain_id}/batch-linear-regression/d61/kinesis*"]
+        Resource = ["arn:aws:ssm:${var.aws_region}:${var.account_id}:parameter/anguyenbus/${var.id}/batch-linear-regression/d61/kinesis*"]
       },
       {
         Sid    = "SSMGet"
@@ -129,7 +129,7 @@ resource "aws_iam_role_policy" "task_policy_scheduler" {
         Action = [
           "ssm:GetParameter"
         ]
-        Resource = ["arn:aws:ssm:${var.aws_region}:${var.account_id}:parameter/anguyenbus/${var.brain_id}/batch-linear-regression/*"]
+        Resource = ["arn:aws:ssm:${var.aws_region}:${var.account_id}:parameter/anguyenbus/${var.id}/batch-linear-regression/*"]
       }
     ]
   })
@@ -148,17 +148,17 @@ module "task_role" {
   ]
 
   create_role           = true
-  role_name             = "${var.brain_name}-${var.service_name}-task-exe"
-  role_description      = "ECS Task Role for svc-${var.service_name} in ${var.brain_name}"
+  role_name             = "${var.name}-${var.service_name}-task-exe"
+  role_description      = "ECS Task Role for svc-${var.service_name} in ${var.name}"
   force_detach_policies = true
   role_requires_mfa     = false
   role_path             = "/"
-  tags                  = merge(local.tags, { Name = "${var.brain_name}-${var.service_name}-task-exe" })
+  tags                  = merge(local.tags, { Name = "${var.name}-${var.service_name}-task-exe" })
 }
 
 resource "aws_iam_role_policy" "task_policy" {
   role = module.task_role.iam_role_name
-  name = "${var.brain_name}-${var.service_name}-policy"
+  name = "${var.name}-${var.service_name}-policy"
   policy = jsonencode({
     Statement = [
       {
@@ -210,7 +210,7 @@ resource "aws_iam_role_policy" "task_policy" {
           "kinesis:PutRecord",
           "kinesis:PutRecords"
         ]
-        Resource = ["arn:aws:kinesis:${var.aws_region}:${var.account_id}:stream/${var.brain_name}-${var.service_name}-profile-update-input-from-batch-skill-process"]
+        Resource = ["arn:aws:kinesis:${var.aws_region}:${var.account_id}:stream/${var.name}-${var.service_name}-profile-update-input-from-batch-skill-process"]
       },
       {
         Sid    = "TokenIamBatchDataProcessingDB"
@@ -218,7 +218,7 @@ resource "aws_iam_role_policy" "task_policy" {
         Action = [
           "rds-db:connect"
         ]
-        Resource = ["arn:aws:rds-db:${var.aws_region}:${var.account_id}:dbuser:${data.aws_ssm_parameter.brain_rds_resource_id.value}/${mysql_user.user.user}"]
+        Resource = ["arn:aws:rds-db:${var.aws_region}:${var.account_id}:dbuser:${data.aws_ssm_parameter.rds_resource_id.value}/${mysql_user.user.user}"]
       },
       {
         Sid    = "CustomerDataS3Access"
@@ -230,8 +230,8 @@ resource "aws_iam_role_policy" "task_policy" {
         ]
         Resource = flatten([
             for customer in local.customers_list:[
-              "arn:aws:s3:::brain-data-${var.environment}-${local.region_short_name}-${customer}/*",
-              "arn:aws:s3:::brain-data-${var.environment}-${local.region_short_name}-${customer}"
+              "arn:aws:s3:::data-${var.environment}-${local.region_short_name}-${customer}/*",
+              "arn:aws:s3:::data-${var.environment}-${local.region_short_name}-${customer}"
             ]
           ])
       }
@@ -253,7 +253,7 @@ resource "aws_kms_grant" "customer_kms_key_writer_processor" {
 }
 
 resource "aws_ssm_parameter" "task_role_arn" {
-  name        = "/anguyenbus/${var.brain_id}/batch-linear-regression/task-role-arn"
+  name        = "/anguyenbus/${var.id}/batch-linear-regression/task-role-arn"
   description = "The ARN for the  ECS task role"
   type        = "String"
   value       = module.task_role.iam_role_arn

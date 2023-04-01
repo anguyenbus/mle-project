@@ -33,29 +33,29 @@ data "template_file" "user_data_ecs_gpu" {
   template = file("${path.module}/templates/user-data.sh")
 
   vars = {
-    cluster_name = "${var.brain_name}-batch-linear-regression"
+    cluster_name = "${var.name}-batch-linear-regression"
     region       = var.aws_region
   }
 }
 
 data "aws_ssm_parameter" "rds_address" {
-  name = "/anguyenbus/${var.brain_id}/rds/address"
+  name = "/anguyenbus/${var.id}/rds/address"
   with_decryption = false
 }
 data "aws_ssm_parameter" "rds_sg" {
-  name = "/anguyenbus/${var.brain_id}/rds/sg"
+  name = "/anguyenbus/${var.id}/rds/sg"
   with_decryption = false
 }
-data "aws_ssm_parameter" "brain_rds_resource_id" {
-  name = "/anguyenbus/${var.brain_id}/rds/resource-id"
+data "aws_ssm_parameter" "rds_resource_id" {
+  name = "/anguyenbus/${var.id}/rds/resource-id"
   with_decryption = false
 }
 data "aws_ssm_parameter" "rds_admin_username" {
-  name = "/anguyenbus/${var.brain_id}/rds/username"
+  name = "/anguyenbus/${var.id}/rds/username"
   with_decryption = false
 }
 data "aws_ssm_parameter" "rds_admin_password" {
-  name = "/anguyenbus/${var.brain_id}/rds/password"
+  name = "/anguyenbus/${var.id}/rds/password"
   with_decryption = true
 }
 data "aws_ssm_parameter" "customer_kms_key_id" {
@@ -63,6 +63,6 @@ data "aws_ssm_parameter" "customer_kms_key_id" {
   name = "/customer/${local.customers_list[count.index]}/kms-key-id"
 }
 data "aws_ssm_parameter" "ecs_cluster_arn" {
-  name = "/anguyenbus/${var.brain_id}/ecs-cluster/arn"
+  name = "/anguyenbus/${var.id}/ecs-cluster/arn"
   with_decryption = true
 }

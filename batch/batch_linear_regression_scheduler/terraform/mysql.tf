@@ -28,7 +28,7 @@ resource "mysql_grant" "user" {
 }
 
 resource "aws_ssm_parameter" "db_name" {
-  name        = "/anguyenbus/${var.brain_id}/batch-linear-regression/d61/database/dbname"
+  name        = "/anguyenbus/${var.id}/batch-linear-regression/d61/database/dbname"
   description = "The batch_data_processing database dbname"
   type        = "String"
   value       = mysql_database.batch_data_processing.name
@@ -39,7 +39,7 @@ resource "aws_ssm_parameter" "db_name" {
 }
 
 resource "aws_ssm_parameter" "db_username" {
-  name        = "/anguyenbus/${var.brain_id}/batch-linear-regression/d61/database/username"
+  name        = "/anguyenbus/${var.id}/batch-linear-regression/d61/database/username"
   description = "The batch_data_processing database username"
   type        = "String"
   value       = mysql_user.user.user
@@ -61,7 +61,7 @@ resource "mysql_user" "customer_db" {
 }
 
 # TODO: specify which table instead of *. However this will fail if table does not exist yet
-resource "mysql_grant" "brain_batch_extraction_grant" {
+resource "mysql_grant" "batch_extraction_grant" {
   count = length(local.customers_list)
   user       = mysql_user.customer_db[count.index].user
   host       = mysql_user.customer_db[count.index].host
@@ -74,9 +74,9 @@ resource "mysql_grant" "brain_batch_extraction_grant" {
   ]
 }
 
-resource "aws_ssm_parameter" "brain_batch_extraction_db_host" {
+resource "aws_ssm_parameter" "batch_extraction_db_host" {
   count = length(local.customers_list)
-  name        = "/anguyenbus/${var.brain_id}/batch-linear-regression/customer_db/${local.customers_list[count.index]}/host"
+  name        = "/anguyenbus/${var.id}/batch-linear-regression/customer_db/${local.customers_list[count.index]}/host"
   type        = "SecureString"
   value       = data.aws_ssm_parameter.rds_address.value
   tags = {
@@ -84,9 +84,9 @@ resource "aws_ssm_parameter" "brain_batch_extraction_db_host" {
   }
 }
 
-resource "aws_ssm_parameter" "brain_batch_extraction_db_port" {
+resource "aws_ssm_parameter" "batch_extraction_db_port" {
   count = length(local.customers_list)
-  name        = "/anguyenbus/${var.brain_id}/batch-linear-regression/customer_db/${local.customers_list[count.index]}/port"
+  name        = "/anguyenbus/${var.id}/batch-linear-regression/customer_db/${local.customers_list[count.index]}/port"
   type        = "SecureString"
   value       = 3306
   tags = {
@@ -94,18 +94,18 @@ resource "aws_ssm_parameter" "brain_batch_extraction_db_port" {
   }
 }
 
-resource "aws_ssm_parameter" "brain_batch_extraction_db_name" {
+resource "aws_ssm_parameter" "batch_extraction_db_name" {
   count = length(local.customers_list)
-  name        = "/anguyenbus/${var.brain_id}/batch-linear-regression/customer_db/${local.customers_list[count.index]}/database"
+  name        = "/anguyenbus/${var.id}/batch-linear-regression/customer_db/${local.customers_list[count.index]}/database"
   type        = "SecureString"
   value       = local.customers_list[count.index]
   tags = {
     environment = "${var.environment}"
   }
 }
-resource "aws_ssm_parameter" "brain_batch_extraction_db_user" {
+resource "aws_ssm_parameter" "batch_extraction_db_user" {
   count = length(local.customers_list)
-  name        = "/anguyenbus/${var.brain_id}/batch-linear-regression/customer_db/${local.customers_list[count.index]}/user"
+  name        = "/anguyenbus/${var.id}/batch-linear-regression/customer_db/${local.customers_list[count.index]}/user"
   type        = "SecureString"
   value       = mysql_user.customer_db[count.index].user
   tags = {

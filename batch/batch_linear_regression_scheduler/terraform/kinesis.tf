@@ -1,5 +1,5 @@
 resource "aws_kinesis_stream" "profile_update_input_from_batch_skill_process" {
-  name             = "${var.brain_name}-${var.service_name}-profile-update-input-from-batch-skill-process"
+  name             = "${var.name}-${var.service_name}-profile-update-input-from-batch-skill-process"
 
   retention_period = 120
   shard_count      = 2
@@ -23,7 +23,7 @@ resource "aws_lambda_event_source_mapping" "example" {
 }
 
 resource "aws_ssm_parameter" "profile_update_input_from_batch_skill_process" {
-  name        = "/anguyenbus/${var.brain_id}/batch-linear-regression/d61/kinesis/profile-update"
+  name        = "/anguyenbus/${var.id}/batch-linear-regression/d61/kinesis/profile-update"
   description = "Profile updates"
   type        = "String"
   value       = aws_kinesis_stream.profile_update_input_from_batch_skill_process.name

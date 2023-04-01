@@ -1,5 +1,5 @@
 locals {
-  ecs_events_iam_name = "${var.aws_region}-${var.brain_id}-${var.service_name}-ecs-events"
+  ecs_events_iam_name = "${var.aws_region}-${var.id}-${var.service_name}-ecs-events"
 }
 
 resource "aws_ecs_task_definition" "service" {
@@ -11,7 +11,7 @@ resource "aws_ecs_task_definition" "service" {
 
 # TODO: use terraform in the processor service to create this SSM
 resource "aws_ssm_parameter" "batch_ecs_service_processor" {
-  name        = "/anguyenbus/${var.brain_id}/batch-linear-regression/ecs-service-processor"
+  name        = "/anguyenbus/${var.id}/batch-linear-regression/ecs-service-processor"
   description = "Name of the ECS service for batch skill processor"
   type        = "String"
   value       = "batch-linear-regression-processor"
@@ -23,7 +23,7 @@ resource "aws_ssm_parameter" "batch_ecs_service_processor" {
 
 # TODO: use terraform in the writer service to create this SSM
 resource "aws_ssm_parameter" "batch_ecs_service_writer" {
-  name        = "/anguyenbus/${var.brain_id}/batch-linear-regression/ecs-service-writer"
+  name        = "/anguyenbus/${var.id}/batch-linear-regression/ecs-service-writer"
   description = "Name of the ECS service for batch skill writer"
   type        = "String"
   value       = "batch-linear-regression-writer"
@@ -34,14 +34,14 @@ resource "aws_ssm_parameter" "batch_ecs_service_writer" {
 }
 
 resource "aws_cloudwatch_event_rule" "every_tuesday_rule" {
-  name                = "${var.aws_region}-${var.brain_id}-${var.service_name}-every-tuesday-runner"
+  name                = "${var.aws_region}-${var.id}-${var.service_name}-every-tuesday-runner"
   description         = "Run batch skill extraction every week on Tuesday at 1am utc"
   is_enabled          = true
   schedule_expression = "cron(0 1 ? * 3 *)"
 }
 
 resource "aws_cloudwatch_event_target" "every_tuesday_runner" {
-  target_id = "${var.aws_region}-${var.brain_id}-${var.service_name}-every-tuesday-runner"
+  target_id = "${var.aws_region}-${var.id}-${var.service_name}-every-tuesday-runner"
   arn       = data.aws_ssm_parameter.ecs_cluster_arn.value
   rule      = aws_cloudwatch_event_rule.every_tuesday_rule.name
   role_arn  = aws_iam_role.ecs_events.arn

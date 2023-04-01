@@ -33,12 +33,12 @@ variable "service_name" {
 #-----------------------------------------------------------------------------------------------------------------------
 # brain Specific Variables
 #-----------------------------------------------------------------------------------------------------------------------
-variable "brain_id" {
+variable "id" {
   type        = string
   description = "brain ID"
 }
 
-variable "brain_name" {
+variable "name" {
   type        = string
   description = "An identification name used inside the project to identify env, region and brain"
 }
@@ -65,7 +65,7 @@ locals {
   #   "ap-southeast-2" = "syd"
   #   "us-east-1"      = "nva"
   # }
-  # brain_name  = "brain-${var.environment}-${local.region_short_names_city[var.aws_region]}-${var.brain_id}"
+  # name  = "${var.environment}-${local.region_short_names_city[var.aws_region]}-${var.id}"
 
   tags = {
     Service     = var.service_name

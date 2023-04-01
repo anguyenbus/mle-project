@@ -17,7 +17,7 @@
 .PHONY: apply destroy destroy-target plan-destroy plan plan-target prep
 VARS="vars/$(ACCOUNT)-$(REGION).tfvars"
 DYNAMODB_TABLE="terraform-remote-state-lock"
-KEY="batch-linear-regression/$(BRAIN_ID)/terraform.tfstate"
+KEY="batch-linear-regression/$(ID)/terraform.tfstate"
 WORKSPACE="$(ACCOUNT)-$(REGION)"
 BOLD=$(shell tput bold)
 RED=$(shell tput setaf 1)
@@ -25,20 +25,20 @@ GREEN=$(shell tput setaf 2)
 YELLOW=$(shell tput setaf 3)
 RESET=$(shell tput sgr0)
 
-export TF_VAR_brain_id=$(BRAIN_ID)
-export TF_VAR_brain_name=$(BRAIN_NAME)
+export TF_VAR_id=$(ID)
+export TF_VAR_name=$(NAME)
 export TF_VAR_customers=$(BATCH_SKILLS_EXTRACTION_CUSTOMERS)
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 set-env:
-	@if [ -z $(BRAIN_ID) ]; then \
-		echo "$(BOLD)$(RED)BRAIN_ID was not set$(RESET)"; \
+	@if [ -z $(ID) ]; then \
+		echo "$(BOLD)$(RED)ID was not set$(RESET)"; \
 		ERROR=1; \
 	 fi
-	@if [ -z $(BRAIN_NAME) ]; then \
-		echo "$(BOLD)$(RED)BRAIN_NAME was not set$(RESET)"; \
+	@if [ -z $(NAME) ]; then \
+		echo "$(BOLD)$(RED)NAME was not set$(RESET)"; \
 		ERROR=1; \
 	 fi
 	@if [ -z $(ACCOUNT) ]; then \
@@ -50,7 +50,7 @@ set-env:
 		ERROR=1; \
 	 fi
 	@if [ ! -z $${ERROR} ] && [ $${ERROR} -eq 1 ]; then \
-		echo "$(BOLD)Example usage: \`ACCOUNT=development BRAIN_ID=001 BRAIN_NAME=brain-dev-nva-001 REGION=us-east-1 make plan\`$(RESET)"; \
+		echo "$(BOLD)Example usage: \`ACCOUNT=development ID=001 NAME=dev-nva-001 REGION=us-east-1 make plan\`$(RESET)"; \
 		exit 1; \
 	 fi
 	@if [ ! -f "$(VARS)" ]; then \
@@ -67,8 +67,8 @@ prep: set-env ## Prepare a new workspace (environment) if needed, configure the 
 	@echo "$(YELLOW)Backend Config DynamoDB:  $(DYNAMODB_TABLE)$(RESET)"
 	@echo "$(YELLOW)Vars:                     $(VARS)$(RESET)"
 
-	@echo "$(YELLOW)BRAIN ID:                     	   $(TF_VAR_brain_id)$(RESET)"
-	@echo "$(YELLOW)BRAIN_NAME:                		   $(TF_VAR_brain_name)$(RESET)"
+	@echo "$(YELLOW)BRAIN ID:                     	   $(TF_VAR_id)$(RESET)"
+	@echo "$(YELLOW)NAME:                		   $(TF_VAR_name)$(RESET)"
 	@echo "$(YELLOW)BATCH_SKILLS_EXTRACTION_CUSTOMERS: $(TF_VAR_customers)$(RESET)"
 
 	@terraform init \
