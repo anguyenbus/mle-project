@@ -79,26 +79,12 @@ def parse_dummy(request):
         "status": "ok",
         "data": [
             {
-                "sentences": "i am a software engineer, c++, java \n",
-                "id": 0,
-                "conceptUris": [
-                    "http://data.europa.eu/esco/skill/b633eb55-8f1f-4ae6-ab4c-2022ffe2cb7f",
-                    "http://data.europa.eu/esco/skill/5b9cde20-f1b9-4adc-bfb3-dbf70b14138d",
-                    "http://data.europa.eu/esco/skill/19a8293b-8e95-4de3-983f-77484079c389",
-                ],
-                "output_scores": [0.9340000153, 0.3639999926, 0.3339999914],
-                "skills": [
-                    "C++",
-                    "use object-oriented programming",
-                    "Java (computer programming)",
-                ],
+                "input_value": "122",
+                "output_scores": [0.9340000153]
             },
             {
-                "sentences": "i like programming web technology and research\n",
-                "id": 1,
-                "conceptUris": None,
-                "output_scores": None,
-                "skills": None,
+                "input_value": "[122,234]",
+                "output_scores": [[0.9340000153],[0.4535]]
             },
         ],
     }
