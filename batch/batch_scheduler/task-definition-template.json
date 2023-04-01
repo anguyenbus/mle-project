@@ -12,19 +12,19 @@
             },
             {
                 "name": "BATCH_PROCESSOR_KINESIS_INPUT_SSM",
-                "value": "/reejig-brain/%BRAIN_ID/batch/kinesis/input"
+                "value": "/anguyenbus/%BRAIN_ID/batch/kinesis/input"
             },
             {
                 "name": "RESULT_WRITER_KINESIS_INPUT_SSM",
-                "value": "/reejig-brain/%BRAIN_ID/batch/kinesis/result-writer"
+                "value": "/anguyenbus/%BRAIN_ID/batch/kinesis/result-writer"
             },
             {
                 "name": "DB_NAME_SSM",
-                "value": "/reejig-brain/%BRAIN_ID/batch/DB_DB"
+                "value": "/anguyenbus/%BRAIN_ID/batch/DB_DB"
             },
             {
                 "name": "DB_USER_SSM",
-                "value": "/reejig-brain/%BRAIN_ID/batch/db/user"
+                "value": "/anguyenbus/%BRAIN_ID/batch/db/user"
             },
             {
                 "name": "BATCH_STATUS_TABLE",
@@ -40,7 +40,7 @@
             },
             {
                 "name": "CUSTOMER_RDS_SSM_PATH_PATTERN",
-                "value": "/reejig-brain/%BRAIN_ID/batch/customer_db/{}/{}"
+                "value": "/anguyenbus/%BRAIN_ID/batch/customer_db/{}/{}"
             },
             {
                 "name": "SHOULD_PROCESS_CONTACTS",
@@ -61,43 +61,43 @@
         },
         "secrets": [
             {
-                "valueFrom": "/reejig-brain/%BRAIN_ID/batch/database/username",
+                "valueFrom": "/anguyenbus/%BRAIN_ID/batch/database/username",
                 "name": "DB_USER"
             },
             {
-                "valueFrom": "/reejig-brain/%BRAIN_ID/rds/address",
+                "valueFrom": "/anguyenbus/%BRAIN_ID/rds/address",
                 "name": "DB_HOST"
             },
             {
-                "valueFrom": "/reejig-brain/%BRAIN_ID/batch/d61/database/dbname",
+                "valueFrom": "/anguyenbus/%BRAIN_ID/batch/d61/database/dbname",
                 "name": "DB_DB"
             },
             {
                 "name": "SNS_TOPIC_NOTIFICATION_ARN",
-                "valueFrom": "/reejig-brain/%BRAIN_ID/batch/sns-topic-notification-arn"
+                "valueFrom": "/anguyenbus/%BRAIN_ID/batch/sns-topic-notification-arn"
             },
             {
                 "name": "TARGET_BATCH_ECS_SERVICE",
-                "valueFrom": "/reejig-brain/%BRAIN_ID/batch/ecs-service-processor"
+                "valueFrom": "/anguyenbus/%BRAIN_ID/batch/ecs-service-processor"
             },
             {
                 "name": "TARGET_WRITER_ECS_SERVICE",
-                "valueFrom": "/reejig-brain/%BRAIN_ID/batch/ecs-service-writer"
+                "valueFrom": "/anguyenbus/%BRAIN_ID/batch/ecs-service-writer"
             },
             {
                 "name": "TARGET_ECS_CLUSTER",
-                "valueFrom": "/reejig-brain/%BRAIN_ID/batch/processing-ecs-cluster/name"
+                "valueFrom": "/anguyenbus/%BRAIN_ID/batch/processing-ecs-cluster/name"
             },
             {
                 "name": "TARGET_AUTO_SCALING_GROUP",
-                "valueFrom": "/reejig-brain/%BRAIN_ID/batch/processing-ecs-cluster/asg"
+                "valueFrom": "/anguyenbus/%BRAIN_ID/batch/processing-ecs-cluster/asg"
             },
             {
                 "name": "CUSTOMERS",
-                "valueFrom": "/reejig-brain/%BRAIN_ID/batch/customers"
+                "valueFrom": "/anguyenbus/%BRAIN_ID/batch/customers"
             },
             {
-                "valueFrom": "/reejig-brain/%BRAIN_ID/batch/slack-web-hook",
+                "valueFrom": "/anguyenbus/%BRAIN_ID/batch/slack-web-hook",
                 "name": "SLACK_WEB_HOOK"
             }
         ]

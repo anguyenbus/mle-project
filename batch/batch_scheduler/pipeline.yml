@@ -1,6 +1,6 @@
 env:
   REEJIG_QUALITY_GATES_IMAGE: 990982564340.dkr.ecr.ap-southeast-2.amazonaws.com/reejig-devops/devops-buildkite-quality-gates:latest
-  ECR_REPOSITORY_NAME: reejig-brain/batch-skill-extraction-scheduler
+  ECR_REPOSITORY_NAME: anguyenbus/batch-skill-extraction-scheduler
   SHARED_ECR_REPOSITORY_URI: 990982564340.dkr.ecr.ap-southeast-2.amazonaws.com
   MAJOR_VERSION: 1
   MINOR_VERSION: 0
