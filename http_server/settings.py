@@ -38,8 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "api",
-    "d61_skill_http_server",
-    "esco_skills_finder",
+    "http_server"
 ]
 
 MIDDLEWARE = [
