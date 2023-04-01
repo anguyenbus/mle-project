@@ -1,7 +1,7 @@
 env:
-  REEJIG_QUALITY_GATES_IMAGE: 990982564340.dkr.ecr.ap-southeast-2.amazonaws.com/reejig-devops/devops-buildkite-quality-gates:latest
-  ECR_REPOSITORY_NAME: reejig-brain/batch-skill-extraction-scheduler
-  SHARED_ECR_REPOSITORY_URI: 990982564340.dkr.ecr.ap-southeast-2.amazonaws.com
+  QUALITY_GATES_IMAGE: 123456789876.dkr.ecr.ap-southeast-2.amazonaws.com/devops/devops-buildkite-quality-gates:latest
+  ECR_REPOSITORY_NAME: brain/batch-skill-extraction-scheduler
+  SHARED_ECR_REPOSITORY_URI: 123456789876.dkr.ecr.ap-southeast-2.amazonaws.com
   MAJOR_VERSION: 1
   MINOR_VERSION: 0
   DOCKERFILE_PATH: batch.skill.extraction.scheduler.Dockerfile
@@ -16,40 +16,26 @@ steps:
     depends_on: ~
     key: terraform_static_analysis
     agents:
-      queue: reejig-shared
+      queue: shared
     plugins:
       - ecr#v2.4.0:
           login: true
-          account_ids: "990982564340"
+          account_ids: "123456789876"
           region: "ap-southeast-2"
       - docker#v3.8.0:
-          image: "${SHARED_ECR_REPOSITORY_URI}/reejig-devops/devops-buildkite-quality-gates:latest"
+          image: "${SHARED_ECR_REPOSITORY_URI}/devops/devops-buildkite-quality-gates:latest"
           propagate-environment: true
           volumes:
             - "./$TERRAFORM_PATH:/data:rw"
           command: [ 'terraform_static_analysis' ]
 
-  # - label: ":mag: :docker: Static Analysis - Dockerfile"
-  #   key: dockerfile_static_analysis
-  #   agents:
-  #     queue: reejig-shared
-  #   plugins:
-  #     - ecr#v2.4.0:
-  #         login: true
-  #     - docker#v3.8.0:
-  #         image: $REEJIG_QUALITY_GATES_IMAGE
-  #         propagate-environment: true
-  #         volumes:
-  #           - "./$DOCKERFILE_PATH:/workdir/Dockerfile:rw"
-  #         command: [ "dockerfile_static_analysis" ]
-
   - label: ":hammer_and_wrench: :docker: Docker Build"
     key: docker_build
     agents:
-      queue: reejig-shared
+      queue: shared
     # depends_on: dockerfile_static_analysis
     plugins:
-      - ./.buildkite/plugins/get-reejig-python-comm: ~
+      - ./.buildkite/plugins/get-python-comm: ~
       - docker-compose#v3.8.0:
           config:
             - docker-compose.yml
@@ -58,32 +44,13 @@ steps:
           image-name: build-$BUILDKITE_BUILD_NUMBER # this is actually the tag
           build: ${SERVICE_NAME}
 
-  # - label: ":mag: :typescript: Snyk Code Vulnerability Scan"
-  #   key: snyk_code_scan
-  #   depends_on: docker_build
-  #   agents:
-  #     queue: reejig-shared
-  #   plugins:
-  #     - ecr#v2.4.0:
-  #         login: true
-  #     - docker#v3.8.0:
-  #         image: $SHARED_ECR_REPOSITORY_URI/reejig-devops/devops-buildkite-security-gates:latest
-  #         always-pull: true
-  #         propagate-environment: true
-  #         environment:
-  #           - SNYK_TOKEN
-  #           - PROJECT_NAME=$SERVICE_NAME
-  #           - SEVERITY_THRESHOLD=high
-  #           - SNYK_CODE_SCAN_EXIT_ON_FAIL=true
-  #         command: [ "scan" ]
-
   - label: ":mag: :docker: Snyk Container Vulnerability Scan"
     key: snyk_container_scan
     agents:
-      queue: reejig-shared
+      queue: shared
     depends_on: docker_build
     # concurrency: 1
-    # concurrency_group: "reejig-shared/$SERVICE_NAME/code-scan"
+    # concurrency_group: "shared/$SERVICE_NAME/code-scan"
     env:
       PROJECT_NAME: $SERVICE_NAME
       IMAGE_NAME: ${SHARED_ECR_REPOSITORY_URI}/${ECR_REPOSITORY_NAME}:build-${BUILDKITE_BUILD_NUMBER}
@@ -97,7 +64,7 @@ steps:
       - docker_build
       # - snyk_container_scan
     agents:
-      queue: reejig-shared
+      queue: shared
     plugins:
       - ecr#v2.4.0:
           login: true
@@ -109,7 +76,7 @@ steps:
   - label: ":mag: :docker: ECR Container Vulnerability Scan"
     key: ecr_container_scan
     agents:
-      queue: reejig-shared
+      queue: shared
     depends_on:
       - snyk_container_scan
       - docker_push
@@ -128,7 +95,7 @@ steps:
     key: generate_deploy_steps_dev
     depends_on: ~
     agents:
-      queue: reejig-shared
+      queue: shared
     env:
       DEPLOY_ENV: "dev"
       PACKAGE_DOCKER_LABEL: $PACKAGE_VERSION
@@ -150,7 +117,7 @@ steps:
     depends_on: ~
     branches: "${PROD_DEPLOY_BRANCH}"
     agents:
-      queue: reejig-shared
+      queue: shared
     env:
       DEPLOY_ENV: "stage"
       PACKAGE_DOCKER_LABEL: $PACKAGE_VERSION
@@ -172,7 +139,7 @@ steps:
     depends_on: ~
     branches: "${PROD_DEPLOY_BRANCH}"
     agents:
-      queue: reejig-shared
+      queue: shared
     env:
       DEPLOY_ENV: "prod"
       PACKAGE_DOCKER_LABEL: $PACKAGE_VERSION

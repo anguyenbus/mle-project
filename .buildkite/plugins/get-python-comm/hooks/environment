@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+echo "Setting up github access token environment variable"
+
+get_ssm () {
+  aws ssm get-parameter --name "$1" --query "Parameter.Value" --with-decryption --output text
+}
+
+GITHUB_ACCESS_TOKEN=$(get_ssm "/buildkite/token")
+export GITHUB_ACCESS_TOKEN
+
+git clone https://$GITHUB_ACCESS_TOKEN@github.com/anguyenbus/anguyenbus-python-comm.git
+
+
+echo "Done. GITHUB_ACCESS_TOKEN setup."
