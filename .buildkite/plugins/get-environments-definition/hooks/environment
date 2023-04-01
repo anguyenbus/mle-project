@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+echo "Setting up github access token environment variable"
+
+get_ssm () {
+  aws ssm get-parameter --name "$1" --query "Parameter.Value" --with-decryption --output text
+}
+
+GITHUB_ACCESS_TOKEN=$(get_ssm "/buildkite/token")
+export GITHUB_ACCESS_TOKEN
+
+ENVIRONMENTS_DEFINITION_BRANCH="${BUILDKITE_PLUGIN_GET_ENVIRONMENTS_DEFINITION_BRANCH:-main}"
+
+echo "Clone github.com/reejig/environments-customers.git with branch $ENVIRONMENTS_DEFINITION_BRANCH"
+git clone https://$GITHUB_ACCESS_TOKEN@github.com/reejig/environments-customers.git -b $ENVIRONMENTS_DEFINITION_BRANCH
+echo "Retrieved environment definitions"
