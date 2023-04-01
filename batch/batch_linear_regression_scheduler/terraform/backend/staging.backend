@@ -1,0 +1,5 @@
+region               = "ap-southeast-2"
+dynamodb_table       = "terraform-remote-state-lock"
+bucket               = "staging-terraform-remote-state"
+encrypt              = true
+workspace_key_prefix = "account"
