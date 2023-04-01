@@ -36,12 +36,6 @@ steps:
       - "$SERVICE_PATH/.buildkite/task-definition.json"
       - "$TERRAFORM_PATH/.terraform.lock.hcl"
 
-  # Do not block on main branch so we avoid environment drift. Change should be checked and validated in DEV and then again in STAGING
-  # - block: ":green_button: Confirm Terraform apply go ahead?"
-  #   key: block_terraform_apply
-  #   depends_on: "terraform_plan"
-  #   branches: "!${PROD_DEPLOY_BRANCH} !develop"
-
   - label: ":terraform: Terraform Apply | ${DEPLOY_ACCOUNT_NAME} - ${DEPLOY_REGION}"
     key: "terraform_apply"
     artifact_paths:

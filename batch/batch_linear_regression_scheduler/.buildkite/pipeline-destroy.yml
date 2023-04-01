@@ -1,0 +1,61 @@
+env:
+  TERRAFORM_PATH: "batch/batch_linear_regression_scheduler/terraform"
+  SERVICE_NAME: batch-linear-regression-scheduler
+
+steps:
+
+  - command: echo "Start of concurrency gate $DEPLOY_BRAIN_NAME-$SERVICE_NAME"
+    concurrency_group: $DEPLOY_BRAIN_NAME-$SERVICE_NAME
+    concurrency: 1
+    key: start-gate-deploy
+    agents:
+      queue: $BUILDKITE_DEPLOYMENT_QUEUE
+
+  - label: ":terraform: Terraform list resources to destroy  | $DEPLOY_BRAIN_NAME-$SERVICE_NAME"
+    key: "list_resources"
+    depends_on: ~
+    command: |
+      cd $TERRAFORM_PATH && make destroy-plan
+    agents:
+      queue: $BUILDKITE_DEPLOYMENT_QUEUE
+    env:
+      ACCOUNT: $DEPLOY_ACCOUNT_NAME
+      REGION: $DEPLOY_REGION
+      ENV: $DEPLOY_ENV
+      TF_IN_AUTOMATION: "yes"
+      BRAIN_ID: $DEPLOY_BRAIN_ID
+      BRAIN_NAME: $DEPLOY_BRAIN_NAME
+      BATCH_LINEAR_REGRESSION_CUSTOMERS: $DEPLOY_BATCH_LINEAR_REGRESSION_CUSTOMERS
+      ECS_TASK_DEFINITION_TEMPLATE_PATH: "batch/batch_linear_regression_scheduler/.buildkite/task-definition-template.json"
+
+  - block: ":green_button: Are you sure to want to destroy all the above resources?"
+    key: block_terraform_destroy
+    depends_on: "list_resources"
+    blocked_state: running
+
+  - label: ":terraform: Terraform DESTROY | $DEPLOY_BRAIN_NAME-$SERVICE_NAME"
+    key: "terraform_destroy"
+    depends_on:
+      - block_terraform_destroy
+    command: |
+      cd $TERRAFORM_PATH && make destroy-ci
+    agents:
+      queue: $BUILDKITE_DEPLOYMENT_QUEUE
+    env:
+      ACCOUNT: $DEPLOY_ACCOUNT_NAME
+      REGION: $DEPLOY_REGION
+      ENV: $DEPLOY_ENV
+      TF_IN_AUTOMATION: "yes"
+      BRAIN_ID: $DEPLOY_BRAIN_ID
+      BRAIN_NAME: $DEPLOY_BRAIN_NAME
+      BATCH_LINEAR_REGRESSION_CUSTOMERS: $DEPLOY_BATCH_LINEAR_REGRESSION_CUSTOMERS
+      ECS_TASK_DEFINITION_TEMPLATE_PATH: "batch/batch_linear_regression_scheduler/.buildkite/task-definition-template.json"
+
+  - command: echo "End of concurrency gate $DEPLOY_BRAIN_NAME-$SERVICE_NAME <--"
+    concurrency_group: $DEPLOY_BRAIN_NAME-$SERVICE_NAME
+    concurrency: 1
+    depends_on:
+      - terraform_destroy
+    key: end-gate-deploy
+    agents:
+      queue: $BUILDKITE_DEPLOYMENT_QUEUE
