@@ -22,7 +22,7 @@ for (const [region, regionValue] of Object.entries(deployments[DEPLOY_ENV].regio
   for (site of regionValue.sites){
 
     // only deploy if enabled for at least one customer
-    if(site.batchSkillExtractionCustomers){
+    if(site.batchlinearRegressionCustomers){
 
       pipeline.push({
         label: `:rocket: Deploy to account ${DEPLOY_ACCOUNT_NAME} - region ${region} - site ${site.siteId}`,
@@ -37,14 +37,14 @@ for (const [region, regionValue] of Object.entries(deployments[DEPLOY_ENV].regio
             DEPLOY_ENV: DEPLOY_ENV,
             DEPLOY_REGION: region,
             DEPLOY_ID: site.siteId,
-            DEPLOY_NAME: site.brainName,
-            BUILDKITE_PLUGIN_S3_SECRETS_BUCKET_PREFIX: "d61_skill_http_server",
+            DEPLOY_NAME: site.mleProjectName,
+            BUILDKITE_PLUGIN_S3_SECRETS_BUCKET_PREFIX: "http_server",
             PACKAGE_DOCKER_LABEL: PACKAGE_DOCKER_LABEL,
             BUILDKITE_DEPLOYMENT_QUEUE: buildkiteDeploymentQueue,
             DEPLOY_ACCOUNT_ID: DEPLOY_ACCOUNT_ID,
-            DEPLOY_BATCH_LINEAR_REGRESSION_CUSTOMERS: site.batchSkillExtractionCustomers,
-            DEPLOY_BATCH_PROCESSOR_COUNT: site.batchSkillExtractionProcessorCount,
-            DEPLOY_RESULT_WRITER_COUNT: site.batchSkillExtractionResultWriterCount
+            DEPLOY_BATCH_LINEAR_REGRESSION_CUSTOMERS: site.batchlinearRegressionCustomers,
+            DEPLOY_BATCH_PROCESSOR_COUNT: site.batchlinearRegressionProcessorCount,
+            DEPLOY_RESULT_WRITER_COUNT: site.batchlinearRegressionResultWriterCount
           },
         },
       },

@@ -1,6 +1,6 @@
 env:
   QUALITY_GATES_IMAGE: 123456789876.dkr.ecr.ap-southeast-2.amazonaws.com/devops/devops-buildkite-quality-gates:latest
-  ECR_REPOSITORY_NAME: brain/batch-linear-regression-scheduler
+  ECR_REPOSITORY_NAME: mle-project/batch-linear-regression-scheduler
   SHARED_ECR_REPOSITORY_URI: 123456789876.dkr.ecr.ap-southeast-2.amazonaws.com
   MAJOR_VERSION: 1
   MINOR_VERSION: 0

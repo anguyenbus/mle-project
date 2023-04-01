@@ -6,8 +6,8 @@ env:
 
 steps:
 
-  - command: echo "Start of concurrency gate $DEPLOY_BRAIN_NAME-$SERVICE_NAME"
-    concurrency_group: $DEPLOY_BRAIN_NAME-$SERVICE_NAME
+  - command: echo "Start of concurrency gate $DEPLOY_NAME-$SERVICE_NAME"
+    concurrency_group: $DEPLOY_NAME-$SERVICE_NAME
     concurrency: 1
     agents:
       queue: $BUILDKITE_DEPLOYMENT_QUEUE
@@ -25,9 +25,9 @@ steps:
       REGION: $DEPLOY_REGION
       ENV: $DEPLOY_ENV
       TF_IN_AUTOMATION: "yes"
-      BRAIN_ID: $DEPLOY_BRAIN_ID
-      BRAIN_NAME: $DEPLOY_BRAIN_NAME
-      BATCH_SKILLS_EXTRACTION_CUSTOMERS: $DEPLOY_BATCH_SKILLS_EXTRACTION_CUSTOMERS
+      ID: $DEPLOY_ID
+      NAME: $DEPLOY_NAME
+      BATCH_LINEAR_REGRESSION_CUSTOMERS: $DEPLOY_BATCH_LINEAR_REGRESSION_CUSTOMERS
       ECS_TASK_DEFINITION_TEMPLATE_PATH: "batch/batch_linear_regression_scheduler/.buildkite/task-definition-template.json"
       ECS_IMAGE: "${DEPLOY_ACCOUNT_ID}.dkr.ecr.${DEPLOY_REGION}.amazonaws.com/anguyenbus/${SERVICE_NAME}:${PACKAGE_DOCKER_LABEL}"
     artifact_paths:
@@ -64,12 +64,12 @@ steps:
       REGION: $DEPLOY_REGION
       ENV: $DEPLOY_ENV
       TF_IN_AUTOMATION: "yes"
-      BRAIN_ID: $DEPLOY_BRAIN_ID
-      BRAIN_NAME: $DEPLOY_BRAIN_NAME
-      BATCH_SKILLS_EXTRACTION_CUSTOMERS: $DEPLOY_BATCH_SKILLS_EXTRACTION_CUSTOMERS
+      ID: $DEPLOY_ID
+      NAME: $DEPLOY_NAME
+      BATCH_LINEAR_REGRESSION_CUSTOMERS: $DEPLOY_BATCH_LINEAR_REGRESSION_CUSTOMERS
 
-  - command: echo "End of concurrency gate $DEPLOY_BRAIN_NAME-$SERVICE_NAME <--"
-    concurrency_group: $DEPLOY_BRAIN_NAME-$SERVICE_NAME
+  - command: echo "End of concurrency gate $DEPLOY_NAME-$SERVICE_NAME <--"
+    concurrency_group: $DEPLOY_NAME-$SERVICE_NAME
     concurrency: 1
     depends_on: terraform_apply
     agents:
