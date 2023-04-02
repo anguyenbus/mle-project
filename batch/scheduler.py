@@ -25,11 +25,6 @@ RESULT_WRITER_KINESIS_INPUT_SSM = os.environ['RESULT_WRITER_KINESIS_INPUT_SSM']
 BATCH_PROCESSOR_COUNT = os.environ['BATCH_PROCESSOR_COUNT']
 RESULT_WRITER_COUNT = os.environ['RESULT_WRITER_COUNT']
 
-# Retrieve from env var populated by task definition valueFrom SSM (itself populated by automation). Examples:
-# ECS_CLUSTER: 'reejig-data-gpu'
-# BATCH_ECS_SERVICE: 'skill-extraction-batch'
-# WRITER_ECS_SERVICE: 'skill-extraction-batch-result-writer'
-# AUTO_SCALING_GROUP: 'skill-extraction-batch-asg'
 ECS_CLUSTER = os.environ['TARGET_ECS_CLUSTER']
 BATCH_ECS_SERVICE = os.environ['TARGET_BATCH_ECS_SERVICE']
 WRITER_ECS_SERVICE = os.environ['TARGET_WRITER_ECS_SERVICE']
@@ -338,9 +333,9 @@ def process(args, config_mgr):
         message_sns('Batch linear regression for {} started...'.format(customer))
         print('Batch linear regression for {} started...'.format(customer))
 
-        kinesis_input_stream = 'batch-skill-extraction-input-{}'.format(
+        kinesis_input_stream = 'batch-linear-regression-input-{}'.format(
             customer)
-        kinesis_output_stream = 'batch-skill-extraction-output-{}'.format(
+        kinesis_output_stream = 'batch-linear-regression-output-{}'.format(
             customer)
 
         total_count = prepare_kinesis(customer, k, args.input_contacts_file,
@@ -399,8 +394,8 @@ def test():
     k = common.init_kinesis_client()
     customer = 'test'
     config_mgr = ConfigManager('', '')
-    kinesis_input_stream = 'batch-skill-extraction-input-{}'.format(customer)
-    kinesis_output_stream = 'batch-skill-extraction-output-{}'.format(customer)
+    kinesis_input_stream = 'batch-linear-regression-input-{}'.format(customer)
+    kinesis_output_stream = 'batch-linear-regression-output-{}'.format(customer)
 
     prepare_kinesis(customer, k, '', kinesis_input_stream,
                     kinesis_output_stream, config_mgr)
@@ -416,7 +411,7 @@ if __name__ == '__main__':
         init_db_and_tables(BATCH_STATUS_TABLE)
         process(args, config_mgr)
     except Exception as e:
-        print('Batch linear regressionn failed {}'.format(str(e)))
+        print('Batch linear regression failed {}'.format(str(e)))
         message_sns('Batch linear regression failed {}'.format(str(e)))
     finally:
         ecs_scale(0, 0, config_mgr)
