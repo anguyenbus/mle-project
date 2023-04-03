@@ -6,9 +6,12 @@ import time
 import numpy as np
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from joblib import load
+from src.simple_linear_regr_utils import generate_data
+from joblib import load, dump
 import sys
 sys.path.append("..")
+from src.simple_linear_regr import SimpleLinearRegression
+
 def process_request(request):
     """
     Extracts relevant information from the request object and returns them.
@@ -34,18 +37,30 @@ def process_request(request):
         input_value = np.array(input_value)
     else:
         batch = False
+        input_value = input_value.replace("\"","")
         input_value = np.array([float(input_value)], dtype='float64')
     # Return the extracted data as a tuple
     return batch, input_value
+
+def load_model():
+    model = SimpleLinearRegression()
+    model_file_path = 'models/model.joblib'
+    if os.path.exists(model_file_path):
+        model = load(model_file_path)
+        print('Model loaded successfully!')
+    else:
+        print(f'Error: model file "{model_file_path}" does not exist')
+        X_train, y_train, X_test, y_test = generate_data()
+        model.fit(X_train, y_train)
+        dump(model, 'models/model.joblib')
+
+    return model
 
 
 @csrf_exempt
 def parse(request):
     # Load the saved model from the file
-    from src.simple_linear_regr import SimpleLinearRegression
-    MODEL = SimpleLinearRegression()
-    MODEL = load('models/model.joblib')
-    batch_services = True
+    model = load_model()
     # request can be either a dict (batch services) or a HttpRequest class
     if not isinstance(request, dict):
         if request.method != "POST":
@@ -53,11 +68,54 @@ def parse(request):
                 "Please use POST request.", status=400
             )
         request = request.POST
-        batch_services = False
 
     batch, input_value = process_request(request=request)
     # predict
-    predictions = MODEL.predict(input_value).tolist()
+    predictions = model.predict(input_value).tolist()
+
+    return JsonResponse({"status": "ok", "data": predictions}, status=200)
+
+@csrf_exempt
+def stream(request):
+    # Load the saved model from the file
+    model = load_model()
+
+    # request can be either a dict (batch services) or a HttpRequest class
+    if not isinstance(request, dict):
+        if request.method != "POST":
+            return HttpResponseBadRequest(
+                "Please use POST request.", status=400
+            )
+        request = request.POST
+
+    batch, input_value = process_request(request=request)
+    # predict
+    if not batch:
+        predictions = model.predict(input_value).tolist()
+    else:
+        return JsonResponse({"status": "ok", "data": "Error! Batches provided, use /batch instead!"}, status=200)
+
+    return JsonResponse({"status": "ok", "data": predictions}, status=200)
+
+@csrf_exempt
+def batch(request):
+    # Load the saved model from the file
+    model = load_model()
+
+    # request can be either a dict (batch services) or a HttpRequest class
+    if not isinstance(request, dict):
+        if request.method != "POST":
+            return HttpResponseBadRequest(
+                "Please use POST request.", status=400
+            )
+        request = request.POST
+
+    batch, input_value = process_request(request=request)
+    # predict
+    if batch:
+        predictions = model.predict(input_value).tolist()
+    else:
+        return JsonResponse({"status": "ok", "data": "Error! Stream provided, use /stream instead!"}, status=200)
 
     return JsonResponse({"status": "ok", "data": predictions}, status=200)
 
