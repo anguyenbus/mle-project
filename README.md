@@ -10,89 +10,52 @@
 ## Project structure
 ```bash
 .
-├── config                      
-│   ├── main.yaml                   # Main configuration file
-│   ├── model                       # Configurations for training model
-│   │   ├── model1.yaml             # First variation of parameters to train model
-│   │   └── model2.yaml             # Second variation of parameters to train model
-│   └── process                     # Configurations for processing data
-│       ├── process1.yaml           # First variation of parameters to process data
-│       └── process2.yaml           # Second variation of parameters to process data
-├── data            
-│   ├── final                       # data after training the model
-│   ├── processed                   # data after processing
-│   ├── raw                         # raw data
-│   └── raw.dvc                     # DVC file of data/raw
-├── docs                            # documentation for your project
-├── dvc.yaml                        # DVC pipeline
-├── .flake8                         # configuration for flake8 - a Python formatter tool
-├── .gitignore                      # ignore files that cannot commit to Git
-├── Makefile                        # store useful commands to set up the environment
-├── models                          # store models
-├── notebooks                       # store notebooks
-├── .pre-commit-config.yaml         # configurations for pre-commit
-├── pyproject.toml                  # dependencies for poetry
-├── README.md                       # describe your project
-├── src                             # store source code
-│   ├── __init__.py                 # make src a Python module 
-│   ├── process.py                  # process data before training model
-│   └── train_model.py              # train model
-└── tests                           # store tests
-    ├── __init__.py                 # make tests a Python module 
-    ├── test_process.py             # test functions for process.py
-    └── test_train_model.py         # test functions for train_model.py
+├───.buildkite                              # Code to run on buildkite platform
+│   ├───hooks                               # buildkite pre-command
+│   ├───plugins                             # plugins for multiple customers, regions, sites
+│   │   ├───get-environments-definition
+│   │   │   └───hooks
+│   │   └───get-python-comm                 # plugins for common python packages
+│   │       └───hooks
+│   └───scripts                             # scripts to check the difference between projects
+├───api
+│   └───migrations                          # scripts for API
+├───batch
+│   └───batch_linear_regression_scheduler   # script for batch scheduler - processor - writer
+│       ├───.buildkite
+│       │   └───scripts
+│       └───terraform
+│           ├───backend                     # backend infrastructure for terraform
+│           ├───templates                   # user-data: install ssm, Inspector, and ECS config
+│           └───vars                        # variables for each region
+├───config
+│   ├───model                               # config for each model
+│   └───process                             # config for each process
+├───dist
+├───docs                                    # DOCUMENTATION
+├───http_server                             # Http_server for inferencing
+│   └───.buildkite
+│       └───scripts
+├───models                                  # models output 
+├───notebooks                               # notebook for inference
+├───src
+│   └───__pycache__
+└───tests
 ```
 
-## Set up the environment
-1. Install [Poetry](https://python-poetry.org/docs/#installation)
-2. Set up the environment:
+1. Installation
 ```bash
-make activate
-make setup
+pip install mle-project
 ```
 
-## Install new packages
-To install new PyPI packages, run:
+2. Test with python
 ```bash
-poetry add <package-name>
-```
+from src import SimpleLinearRegression, evaluate, generate_data
 
-## Run the entire pipeline
-To run the entire pipeline, type:
-```bash
-dvc repo
-```
+X_train, y_train, X_test, y_test = generate_data()
+model = SimpleLinearRegression()
+model.fit(X_train, y_train)
+predicted = model.predict(X_test)
+evaluate(model, X_test, y_test, predicted)
 
-## Version your data
-Read [this article](https://towardsdatascience.com/introduction-to-dvc-data-version-control-tool-for-machine-learning-projects-7cb49c229fe0) on how to use DVC to version your data.
-
-Basically, you start with setting up a remote storage. The remote storage is where your data is stored. You can store your data on DagsHub, Google Drive, Amazon S3, Azure Blob Storage, Google Cloud Storage, Aliyun OSS, SSH, HDFS, and HTTP.
-
-```bash
-dvc remote add -d remote <REMOTE-URL>
-```
-
-Commit the config file:
-```bash
-git commit .dvc/config -m "Configure remote storage"
-```
-
-Push the data to remote storage:
-```bash
-dvc push 
-```
-
-Add and push all changes to Git:
-```bash
-git add .
-git commit -m 'commit-message'
-git push origin <branch>
-```
-
-# Auto-generate API documentation
-
-To auto-generate API document for your project, run:
-
-```bash
-make docs
 ```
