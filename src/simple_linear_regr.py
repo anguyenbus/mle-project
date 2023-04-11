@@ -1,5 +1,13 @@
 import numpy as np
-from .simple_linear_regr_utils import evaluate, generate_data
+
+try:
+    from .simple_linear_regr_utils import evaluate, generate_data
+except Exception as e:
+    print(
+        f"This is not for running as a service. We will run in package mode. Error: {e}"
+    )
+    from simple_linear_regr_utils import evaluate, generate_data
+
 from joblib import dump
 
 
